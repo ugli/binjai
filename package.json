@@ -2,26 +2,37 @@
   "name": "binjai",
   "version": "0.1.0",
   "description": "Typescript collections and more to come..",
-  "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
-  "scripts": {
-    "prepare": "npm run build",
-    "build": "tsc"
-  },
-  "files": [
-    "lib"
+  "keywords": [
+    "typescript",
+    "collections"
   ],
+  "author": "Fredrik Kivi",
+  "license": "MIT",
+  "homepage": "https://github.com/ugli/binjai#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ugli/binjai.git"
   },
-  "keywords": [
-    "typescript"
-  ],
-  "author": "Fredrik Kivi",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/ugli/binjai/issues"
   },
-  "homepage": "https://github.com/ugli/binjai#readme"
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "prepare": "npm run build",
+    "build": "tsc",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@babel/core": "7.9.0",
+    "@babel/preset-env": "7.9.5",
+    "@babel/preset-typescript": "7.9.0",
+    "@types/jest": "25.2.1",
+    "babel-jest": "25.5.0",
+    "jest": "25.5.0",
+    "typescript": "3.8.3"
+  }
 }
