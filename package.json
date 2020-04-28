@@ -1,7 +1,7 @@
 {
-  "name": "@ugli/binjai",
+  "name": "binjai",
   "version": "0.1.0",
-  "description": "Some Typescript nice to have ...",
+  "description": "Typescript collections and more to come..",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "scripts": {
