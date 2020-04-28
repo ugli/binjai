@@ -1,0 +1,27 @@
+{
+  "name": "@ugli/binjai",
+  "version": "0.1.0",
+  "description": "Some Typescript nice to have ...",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "scripts": {
+    "prepare": "npm run build",
+    "build": "tsc"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ugli/binjai.git"
+  },
+  "keywords": [
+    "typescript"
+  ],
+  "author": "Fredrik Kivi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ugli/binjai/issues"
+  },
+  "homepage": "https://github.com/ugli/binjai#readme"
+}
