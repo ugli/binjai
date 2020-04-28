@@ -1,2 +1,3 @@
 # binjai
-Some Typescript nice to have ...
+## Install
+npm i binjai
