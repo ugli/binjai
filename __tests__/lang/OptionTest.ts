@@ -1,4 +1,4 @@
-import {Options} from "../../../main/typescript/collection/Option";
+import {Options} from "src/lang/Option";
 
 describe("Option", () => {
     it("Some number", () => {
