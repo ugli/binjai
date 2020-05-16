@@ -1,4 +1,5 @@
 module.exports = {
   preset: 'ts-jest',
-  testMatch: ["**/**/*TestSpec.ts"]
+  testMatch: ["**/**/*TestSpec.ts"],
+  collectCoverageFrom: ["src/**/*.ts"]
 };
