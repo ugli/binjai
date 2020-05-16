@@ -11,9 +11,9 @@ describe("Option", () => {
       expect(Options.from(3).map(e => `a${e}`).orElse("")).toEqual("a3");
     });
     it("Filter to None", () => {
-      expect(Options.from(3).filter(e => false).orElse(-1)).toEqual(-1);
+      expect(Options.from(3).filter(() => false).orElse(-1)).toEqual(-1);
     });
     it("Filter to Some", () => {
-      expect(Options.from(3).filter(e => true).orElse(-1)).toEqual(3);
+      expect(Options.from(3).filter(() => true).orElse(-1)).toEqual(3);
     });
   });
