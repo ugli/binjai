@@ -1,4 +1,4 @@
-import {Options} from "src/lang/Option";
+import {Options} from "./Option";
 
 describe("Option", () => {
     it("Some number", () => {

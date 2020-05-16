@@ -23,14 +23,14 @@
   ],
   "scripts": {
     "prepare": "npm run build",
-    "prebuild": "rm -rf lib",
-    "build": "tsc",
+    "build": "npm run compile && npm test",
+    "compile": "tsc",
     "test": "jest"
   },
   "devDependencies": {
-    "@types/jest": "^25.2.1",
-    "jest": "^25.5.1",
-    "ts-jest": "^25.4.0",
-    "typescript": "^3.8.3"
+    "@types/jest": "25.2.1",
+    "jest": "25.5.1",
+    "ts-jest": "25.4.0",
+    "typescript": "3.8.3"
   }
 }
