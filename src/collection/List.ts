@@ -1,5 +1,4 @@
 import { Collection, CollectionLike, toArray } from "./Collection";
-import { ArrayIndexOutOfBoundsException } from "../lang/Exceptions";
 
 export const List = <T>(cl: CollectionLike<T> = []): List<T> =>
     ArrayList(cl);
@@ -16,7 +15,7 @@ export const ArrayList = <T>(cl: CollectionLike<T> = []): List<T> =>
     new ArrayListImpl(toArray(cl, true));
 
 class ArrayListImpl<T> implements List<T>  {
-    private readonly array: T[];
+    readonly array: T[];
 
     constructor(array: T[]) {
         this.array = array;
@@ -62,4 +61,11 @@ class ArrayListImpl<T> implements List<T>  {
     toString = (): string =>
         `[${this.join(", ")}]`;
 
+}
+
+export class ArrayIndexOutOfBoundsException extends Error {
+    constructor(index: number, size: number) {
+        super(`Index out of bounds[0, ${size}], index: ${index}`);
+        Object.setPrototypeOf(this, ArrayIndexOutOfBoundsException.prototype);
+    }
 }

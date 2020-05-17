@@ -1,7 +1,10 @@
 export type CollectionLike<T> = Collection<T> | Array<T>
 
-export const toArray = <T>(cl: CollectionLike<T>, copy: boolean) =>
-    cl instanceof Array ? cl as Array<T> : cl.toArray(copy)
+export const toArray = <T>(cl: CollectionLike<T>, copy: boolean): T[] => {
+    if (cl instanceof Array)
+        return copy ? cl.concat() : cl;
+    return cl.toArray(copy);
+}
 
 export interface Collection<T> {
     size(): number;

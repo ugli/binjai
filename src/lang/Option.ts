@@ -1,7 +1,6 @@
 export const Option = <T>(value: any): Option<T> =>
     value ? new Some(value) : new None();
 
-
 export interface Option<T> {
     filter(op: ((t: T) => boolean)): Option<T>;
     map<U>(op: ((t: T) => U)): Option<U>;
@@ -10,7 +9,6 @@ export interface Option<T> {
 }
 
 class Some<T> implements Option<T> {
-
     readonly value: T;
 
     constructor(value: T) {
