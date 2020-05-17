@@ -10,6 +10,10 @@ describe("Option", () => {
     expect(Option(3).orElse(2)).toEqual(3);
     expect(Option().orElse(2)).toEqual(2);
   });
+  it("orUndefined", () => {
+    expect(Option(3).orUndefined()).toBeTruthy();
+    expect(Option().orUndefined()).toBeFalsy();
+  });
   it("orThrow", () => {
     expect(Option(3).orThrow(new Error("ops"))).toEqual(3);
     expect(() => Option().orThrow(new Error("ops"))).toThrow("ops");

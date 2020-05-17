@@ -6,6 +6,7 @@ export interface Option<T> {
     map<U>(op: ((t: T) => U)): Option<U>;
     isDefined(): boolean;
     orElse(e: T): T;
+    orUndefined(): T | undefined;
     orThrow(error: Error): T;
     toString(): string;
 }
@@ -19,6 +20,7 @@ class Some<T> implements Option<T> {
 
     isDefined = () => true;
     orElse = () => this.value;
+    orUndefined = () => this.value;
     orThrow = () => this.value;
     filter = (op: (t: T) => boolean): Option<T> => op(this.value) ? this : Option();
     map = <U>(op: (t: T) => U) => Option<U>(op(this.value));
@@ -28,6 +30,7 @@ class Some<T> implements Option<T> {
 class None<T> implements Option<T> {
     isDefined = () => false;
     orElse = (e: T) => e;
+    orUndefined = () => undefined;
     orThrow = (error: Error) => { throw error };
     filter = () => Option<T>();
     map = <U>(): Option<U> => Option<U>();
