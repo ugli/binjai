@@ -1,6 +1,6 @@
 {
   "name": "binjai",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Typescript collections and more to come..",
   "keywords": [
     "typescript",
@@ -23,6 +23,7 @@
   ],
   "scripts": {
     "prepare": "npm run build",
+    "prebuild": "rm -rf lib",
     "build": "npm run compile && npm test",
     "compile": "tsc",
     "test": "jest --coverage"
