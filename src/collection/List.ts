@@ -11,8 +11,8 @@ export interface List<T> extends Collection<T> {
     map<U>(op: ((t: T) => U)): List<U>;
 }
 
-export const ArrayList = <T>(cl: CollectionLike<T> = []): List<T> =>
-    new ArrayListImpl(toArray(cl, true));
+export const ArrayList = <T>(collectionLike: CollectionLike<T> = []): List<T> =>
+    new ArrayListImpl(toArray(collectionLike, true));
 
 class ArrayListImpl<T> implements List<T>  {
     readonly array: T[];
@@ -55,8 +55,11 @@ class ArrayListImpl<T> implements List<T>  {
     reduce = (op: (prev: T, curr: T) => T): T =>
         this.array.reduce(op);
 
-    toArray = (copy: boolean): T[] =>
-        copy ? this.array.concat() : this.array;
+    toArray = (): T[] =>
+        this.array;
+
+    toArrayCopy = (): T[] =>
+        this.array.concat()
 
     toString = (): string =>
         `[${this.join(", ")}]`;

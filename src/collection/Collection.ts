@@ -1,9 +1,9 @@
 export type CollectionLike<T> = Collection<T> | Array<T>
 
-export const toArray = <T>(cl: CollectionLike<T>, copy: boolean): T[] => {
-    if (cl instanceof Array)
-        return copy ? cl.concat() : cl;
-    return cl.toArray(copy);
+export const toArray = <T>(collectionLike: CollectionLike<T>, copy: boolean): T[] => {
+    if (collectionLike instanceof Array)
+        return copy ? collectionLike.concat() : collectionLike;
+    return copy ? collectionLike.toArrayCopy(): collectionLike.toArray();
 }
 
 export interface Collection<T> {
@@ -16,6 +16,7 @@ export interface Collection<T> {
     join(separator: string): string;
     map<U>(op: ((t: T) => U)): Collection<U>;
     reduce(op: (prev: T, curr: T) => T): T;
-    toArray(copy: boolean): T[];
+    toArray(): T[];
+    toArrayCopy(): T[];
     toString(): string;
 }

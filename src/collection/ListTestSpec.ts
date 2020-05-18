@@ -49,12 +49,12 @@ describe("ArrayList", () => {
   });
   it("toArray copy", () => {
     const list = ArrayList([1, 2, 3, 4]);
-    list.toArray(true)[0] = 5;
+    list.toArrayCopy()[0] = 5;
     expect(list.toString()).toEqual("[1, 2, 3, 4]");
   });
   it("toArray no copy", () => {
     const list = ArrayList([1, 2, 3, 4]);
-    list.toArray(false)[0] = 5;
+    list.toArray()[0] = 5;
     expect(list.toString()).toEqual("[5, 2, 3, 4]");
   });
 
