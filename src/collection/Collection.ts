@@ -1,3 +1,5 @@
+import { Entry } from "./Map";
+
 export type CollectionLike<T> = Collection<T> | Array<T>
 
 export const toArray = <T>(collectionLike: CollectionLike<T>, copy: boolean): T[] => {
@@ -16,6 +18,7 @@ export interface Collection<T> {
     join(separator: string): string;
     map<U>(op: ((t: T) => U)): Collection<U>;
     reduce(op: (prev: T, curr: T) => T): T;
+    groupBy<K>(keyFunc: (item: T) => K): Collection<Entry<K, Collection<T>>>;
     toArray(): T[];
     toArrayCopy(): T[];
     toString(): string;

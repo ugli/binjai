@@ -1,5 +1,10 @@
 import { ArrayList, List } from "./List";
 
+class Abba {
+  constructor(readonly name: string, readonly x: number){}
+  toString = () => `name=${this.name}, x=${this.x}`;
+}
+
 describe("ArrayList", () => {
   it("empty list", () => {
     expect(List().toString()).toEqual("[]");
@@ -49,13 +54,19 @@ describe("ArrayList", () => {
   });
   it("toArray copy", () => {
     const list = ArrayList([1, 2, 3, 4]);
-    list.toArrayCopy()[0] = 5;
+    const array = list.toArrayCopy();
+    array[0] = 5;
     expect(list.toString()).toEqual("[1, 2, 3, 4]");
   });
   it("toArray no copy", () => {
     const list = ArrayList([1, 2, 3, 4]);
-    list.toArray()[0] = 5;
+    const array = list.toArray();
+    array[0] = 5;
     expect(list.toString()).toEqual("[5, 2, 3, 4]");
+  });
+  it("group by", () => {
+    const list = ArrayList([new Abba("a", 2), new Abba("b", 1), new Abba("a", 3)]);
+    expect(list.groupBy(e => e.name).toString()).toEqual("[[a=[name=a, x=2, name=a, x=3]], [b=[name=b, x=1]]]");
   });
 
 });

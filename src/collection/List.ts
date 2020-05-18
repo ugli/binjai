@@ -1,4 +1,5 @@
 import { Collection, CollectionLike, toArray } from "./Collection";
+import { Entry, MutableMap } from "./Map";
 
 export const List = <T>(cl: CollectionLike<T> = []): List<T> =>
     ArrayList(cl);
@@ -7,6 +8,7 @@ export interface List<T> extends Collection<T> {
     concat(c: Collection<T> | Array<T>): List<T>;
     filter(op: ((t: T) => boolean)): List<T>;
     flatMap<U>(op: ((t: T) => CollectionLike<U>)): List<U>;
+    groupBy<K>(keyFunc: (item: T) => K): List<Entry<K, List<T>>>;
     get(index: number): T;
     map<U>(op: ((t: T) => U)): List<U>;
 }
@@ -15,11 +17,7 @@ export const ArrayList = <T>(collectionLike: CollectionLike<T> = []): List<T> =>
     new ArrayListImpl(toArray(collectionLike, true));
 
 class ArrayListImpl<T> implements List<T>  {
-    readonly array: T[];
-
-    constructor(array: T[]) {
-        this.array = array;
-    }
+    constructor(readonly array: T[]) { }
 
     size = (): number =>
         this.array.length;
@@ -63,6 +61,19 @@ class ArrayListImpl<T> implements List<T>  {
 
     toString = (): string =>
         `[${this.join(", ")}]`;
+
+    toMap = <K>(keyFunc: (item: T) => K): MutableMap<K, List<T>> =>
+        this.array.reduce((map, item) => {
+            map.get(keyFunc(item)).eitherOr(
+                list => list.toArray().push(item),
+                () => map.put(keyFunc(item), ArrayList([item]))
+            );
+            return map;
+        }, new MutableMap<K, List<T>>()
+        );
+
+    groupBy = <K>(keyFunc: (item: T) => K): List<Entry<K, List<T>>> =>
+        this.toMap(keyFunc).entries();
 
 }
 
