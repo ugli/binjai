@@ -1,5 +1,5 @@
 import { Collection, CollectionLike, toArray } from "./Collection";
-import { Entry, MutableMap } from "./Map";
+import { Entry, ImmutableMap, MutableMap } from "./Map";
 
 export const List = <T>(cl: CollectionLike<T> = []): List<T> =>
     ArrayList(cl);
@@ -62,15 +62,15 @@ class ArrayListImpl<T> implements List<T>  {
     toString = (): string =>
         `[${this.join(", ")}]`;
 
-    toMap = <K>(keyFunc: (item: T) => K): MutableMap<K, List<T>> =>
+    toMap = <K>(keyFunc: (item: T) => K): ImmutableMap<K, List<T>> =>
         this.array.reduce((map, item) => {
             map.get(keyFunc(item)).eitherOr(
                 list => list.toArray().push(item),
                 () => map.put(keyFunc(item), ArrayList([item]))
             );
             return map;
-        }, new MutableMap<K, List<T>>()
-        );
+        }, MutableMap<K, List<T>>()
+        ).toImmutable();
 
     groupBy = <K>(keyFunc: (item: T) => K): List<Entry<K, List<T>>> =>
         this.toMap(keyFunc).entries();
