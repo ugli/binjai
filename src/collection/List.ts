@@ -11,6 +11,7 @@ export interface List<T> extends Collection<T> {
     groupBy<K>(keyFunc: (item: T) => K): List<Entry<K, List<T>>>;
     get(index: number): T;
     map<U>(op: ((t: T) => U)): List<U>;
+    toMap<K>(keyFunc: (item: T) => K): ImmutableMap<K, List<T>>;
 }
 
 export const ArrayList = <T>(collectionLike: CollectionLike<T> = []): List<T> =>
