@@ -13,7 +13,7 @@ export interface ImmutableMap<K, V> {
     entries(): List<Entry<K, V>>;
     keys(): ImmutableSet<K>;
     values(): List<V>;
-    toMmutable(): MutableMap<K, V>;
+    toMutable(): MutableMap<K, V>;
 }
 
 export interface MutableMap<K, V> {
@@ -67,7 +67,7 @@ class MutableHashMapImpl<K, V> implements MutableMap<K, V>, ImmutableMap<K, V> {
     toImmutable = (): ImmutableMap<K, V> =>
         new MutableHashMapImpl(this.table.concat());
 
-    toMmutable = (): MutableMap<K, V> =>
+    toMutable = (): MutableMap<K, V> =>
         new MutableHashMapImpl(this.table.concat());
 
 }
@@ -97,7 +97,7 @@ class NativeMapImpl<K, V> implements MutableMap<K, V>, ImmutableMap<K, V> {
     toImmutable = (): ImmutableMap<K, V> =>
         new NativeMapImpl(new Map(this.map.entries()));
 
-    toMmutable = (): MutableMap<K, V> =>
+    toMutable = (): MutableMap<K, V> =>
         new NativeMapImpl(new Map(this.map.entries()));
 
 } 
