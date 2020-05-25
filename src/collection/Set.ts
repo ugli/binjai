@@ -16,7 +16,7 @@ export class ImmutableSet<T> implements Collection<T> {
     forEach =(op: (t: T) => void) => this.toArray().forEach(op);
     join = (separator: string) => this.toArray().join(separator);
     map = <U>(op: (t: T) => U) => new ImmutableSet(this.toArray().map(op));
-    reduce = (op: (prev: T, curr: T) => T) => this.toArray().reduce(op);
+    reduce = <U>(reduceFunc: (previousValue: U, currentValue: T) => U, initialValue: U) => this.toArray().reduce(reduceFunc, initialValue);
     groupBy = <K>(keyFunc: (item: T) => K) => List(this.toArray()).groupBy(keyFunc);
     toArray = () => Array.from(this.set.keys());
     toArrayCopy = () => this.toArray().concat();

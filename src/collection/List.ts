@@ -1,17 +1,16 @@
 import { Collection, CollectionLike, toArray } from "./Collection";
-import { Entry, ImmutableMap, MutableMap } from "./Map";
+import { ImmutableMap, MutableMap } from "./Map";
 
 export const List = <T>(cl: CollectionLike<T> = []): List<T> =>
     ArrayList(cl);
 
 export interface List<T> extends Collection<T> {
-    concat(c: Collection<T> | Array<T>): List<T>;
-    filter(op: ((t: T) => boolean)): List<T>;
-    flatMap<U>(op: ((t: T) => CollectionLike<U>)): List<U>;
-    groupBy<K>(keyFunc: (item: T) => K): List<Entry<K, List<T>>>;
+    concat(collection: Collection<T> | Array<T>): List<T>;
+    filter(predicate: ((element: T) => boolean)): List<T>;
+    flatMap<U>(mapFunc: ((element: T) => CollectionLike<U>)): List<U>;
+    groupBy<K>(keyFunc: (element: T) => K): ImmutableMap<K, List<T>>;
     get(index: number): T;
-    map<U>(op: ((t: T) => U)): List<U>;
-    toMap<K>(keyFunc: (item: T) => K): ImmutableMap<K, List<T>>;
+    map<U>(mapFunc: ((element: T) => U)): List<U>;
 }
 
 export const ArrayList = <T>(collectionLike: CollectionLike<T> = []): List<T> =>
@@ -26,18 +25,18 @@ class ArrayListImpl<T> implements List<T>  {
     isEmpty = () =>
         this.array.length === 0;
 
-    concat = (cl: CollectionLike<T>): List<T> =>
-        ArrayList(this.array.concat(toArray(cl, false)));
+    concat = (collection: CollectionLike<T>): List<T> =>
+        ArrayList(this.array.concat(toArray(collection, false)));
 
-    filter = (op: (t: T) => boolean): List<T> =>
-        ArrayList(this.array.filter(op));
+    filter = (predicate: (element: T) => boolean): List<T> =>
+        ArrayList(this.array.filter(predicate));
 
-    flatMap<U>(op: (t: T) => CollectionLike<U>): List<U> {
-        return ArrayList(this.map(op).reduce((prev, curr) => toArray(prev, false).concat(toArray(curr, false))));
+    flatMap<U>(mapFunc: (element: T) => CollectionLike<U>): List<U> {
+        return ArrayList(this.array.map(mapFunc).reduce((prev, curr) => toArray(prev, false).concat(toArray(curr, false))));
     }
 
-    forEach = (op: (t: T) => void): void =>
-        this.array.forEach(op);
+    forEach = (proc: (element: T) => void): void =>
+        this.array.forEach(proc);
 
     get = (index: number): T => {
         if (index < 0 || index >= this.array.length)
@@ -48,11 +47,11 @@ class ArrayListImpl<T> implements List<T>  {
     join = (separator: string): string =>
         this.array.join(separator);
 
-    map = <U>(op: (t: T) => U): List<U> =>
-        ArrayList(this.array.map(op));
+    map = <U>(mapFunc: (t: T) => U): List<U> =>
+        ArrayList(this.array.map(mapFunc));
 
-    reduce = (op: (prev: T, curr: T) => T): T =>
-        this.array.reduce(op);
+    reduce = <U>(func: (prev: U, curr: T) => U, initialValue: U): U =>
+        this.array.reduce(func, initialValue);
 
     toArray = (): T[] =>
         this.array;
@@ -63,7 +62,7 @@ class ArrayListImpl<T> implements List<T>  {
     toString = (): string =>
         `[${this.join(", ")}]`;
 
-    toMap = <K>(keyFunc: (item: T) => K): ImmutableMap<K, List<T>> =>
+    groupBy = <K>(keyFunc: (item: T) => K): ImmutableMap<K, List<T>> =>
         this.array.reduce((map, item) => {
             map.get(keyFunc(item)).eitherOr(
                 list => list.toArray().push(item),
@@ -73,8 +72,6 @@ class ArrayListImpl<T> implements List<T>  {
         }, MutableMap<K, List<T>>()
         ).toImmutable();
 
-    groupBy = <K>(keyFunc: (item: T) => K): List<Entry<K, List<T>>> =>
-        this.toMap(keyFunc).entries();
 
 }
 

@@ -1,4 +1,4 @@
-import { MutableHashMap, NativeMap } from "./Map";
+import { MutableHashMap, MutableNativeMap } from "./Map";
 
 describe("HashMap", () => {
   it("put & get", () => {
@@ -19,12 +19,12 @@ describe("HashMap", () => {
 
 describe("NativeMap", () => {
   it("put & get", () => {
-    const map = NativeMap<string, string>();
+    const map = MutableNativeMap<string, string>();
     map.put("apa", "bapa");
     expect(map.get("apa").orElse("x")).toEqual("bapa");
   });
   it("keys, values, entries", () => {
-    const map = NativeMap<number, string>();
+    const map = MutableNativeMap<number, string>();
     map.put(1, "q");
     map.put(2, "a");
     expect(map.keys().toString()).toEqual("[1, 2]");

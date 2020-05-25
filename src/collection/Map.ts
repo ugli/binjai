@@ -26,11 +26,10 @@ export interface MutableMap<K, V> {
     toImmutable(): ImmutableMap<K, V>;
 }
 
-export const MutableHashMap = <K, V>(): MutableMap<K, V> => new MutableHashMapImpl();
-export const NativeMap = <K, V>(): MutableMap<K, V> => new NativeMapImpl();
-export const MutableMap = MutableHashMap;
 export const Entry = <K, V>(key: K, value: V): Entry<K, V> => new EntryImpl(key, value);
-
+export const MutableHashMap = <K, V>(): MutableMap<K, V> => new MutableHashMapImpl();
+export const MutableNativeMap = <K, V>(): MutableMap<K, V> => new NativeMapImpl();
+export const MutableMap = MutableHashMap;
 
 class EntryImpl<K, V> implements Entry<K, V> {
     constructor(readonly key: K, readonly value: V) { }
