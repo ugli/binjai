@@ -1,14 +1,10 @@
-import { ArrayList, List } from "./List";
+import { ArrayList } from "./List";
 
-class Abba {
-  constructor(readonly name: string, readonly x: number){}
-  toString = () => `name=${this.name}, x=${this.x}`;
-}
 
 describe("ArrayList", () => {
   it("empty list", () => {
-    expect(List().toString()).toEqual("[]");
-    expect(List().isEmpty()).toBeTruthy();
+    expect(ArrayList().toString()).toEqual("[]");
+    expect(ArrayList().isEmpty()).toBeTruthy();
   });
   it("toString with numbers", () => {
     expect(ArrayList([3, 4]).toString()).toEqual("[3, 4]");
@@ -37,36 +33,38 @@ describe("ArrayList", () => {
   it("empty List", () => {
     expect(ArrayList().toString()).toEqual("[]");
   });
-  it("concat Collection", () => {
-    expect(ArrayList([3, 4]).concat(ArrayList([1, 2])).toString()).toEqual("[3, 4, 1, 2]");
-  });
-  it("concat array", () => {
-    expect(ArrayList([3, 4]).concat([1, 2]).toString()).toEqual("[3, 4, 1, 2]");
-  });
   it("filter", () => {
     expect(ArrayList([1, 2, 3, 4]).filter(e => e % 2 === 0).toString()).toEqual("[2, 4]");
   });
+  /*
   it("get element", () => {
-    const list = ArrayList([1, 2, 3, 4]);
+    const list = new ArrayList2([1, 2, 3, 4]);
     expect(list.get(2)).toEqual(3);
     expect(() => list.get(-1)).toThrow("Index out of bounds[0, 4], index: -1");
     expect(() => list.get(4)).toThrow("Index out of bounds[0, 4], index: 4");
   });
+  */
+ /*
   it("toArray copy", () => {
-    const list = ArrayList([1, 2, 3, 4]);
+    const list = new ArrayList2([1, 2, 3, 4]);
     const array = list.toArrayCopy();
     array[0] = 5;
     expect(list.toString()).toEqual("[1, 2, 3, 4]");
   });
+  */
+ /*
   it("toArray no copy", () => {
-    const list = ArrayList([1, 2, 3, 4]);
+    const list = new ArrayList2([1, 2, 3, 4]);
     const array = list.toArray();
     array[0] = 5;
     expect(list.toString()).toEqual("[5, 2, 3, 4]");
   });
+  */
+ /*
   it("group by", () => {
-    const list = ArrayList([new Abba("a", 2), new Abba("b", 1), new Abba("a", 3)]);
+    const list = new ArrayList2([new Abba("a", 2), new Abba("b", 1), new Abba("a", 3)]);
     expect(list.groupBy(e => e.name).toString()).toEqual("[[a=[name=a, x=2, name=a, x=3]], [b=[name=b, x=1]]]");
   });
+  */
 
 });

@@ -1,102 +1,101 @@
 import { Option } from "../lang/Option";
-import { List } from "./List";
-import { ImmutableSet } from "./Set";
-import { Objects } from "../lang/Objects";
+import { Collection } from "./Collection";
+import { CollectionBuilder } from "./CollectionBuilder";
 
-export interface Entry<K, V> {
-    readonly key: K;
-    readonly value: V;
-}
-
-export interface ImmutableMap<K, V> {
-    get(key: K): Option<V>;
-    entries(): List<Entry<K, V>>;
-    keys(): ImmutableSet<K>;
-    values(): List<V>;
-    toMutable(): MutableMap<K, V>;
-}
-
-export interface MutableMap<K, V> {
-    get(key: K): Option<V>;
-    entries(): List<Entry<K, V>>;
-    keys(): ImmutableSet<K>;
-    values(): List<V>;
-
-    put(key: K, value: V): void;
-    toImmutable(): ImmutableMap<K, V>;
-}
-
-export const Entry = <K, V>(key: K, value: V): Entry<K, V> => new EntryImpl(key, value);
-export const MutableHashMap = <K, V>(): MutableMap<K, V> => new MutableHashMapImpl();
-export const MutableNativeMap = <K, V>(): MutableMap<K, V> => new NativeMapImpl();
-export const MutableMap = MutableHashMap;
-
-class EntryImpl<K, V> implements Entry<K, V> {
+export class Entry<K, V> {
     constructor(readonly key: K, readonly value: V) { }
     toString = () => `[${this.key}=${this.value}]`;
 }
 
-class MutableHashMapImpl<K, V> implements MutableMap<K, V>, ImmutableMap<K, V> {
-    constructor(readonly table = new Array<Entry<K, V>>()) { }
+export abstract class ImmutableMap<K, V> extends Collection<Entry<K, V>> {
+    abstract get(key: K): Option<V>;
+}
 
-    private hash = (key: K) => {
-        const hashCode = Objects.hashCode(key);
-        return hashCode ^ (hashCode >>> 16)
+export abstract class MutableMap<K, V> extends Collection<Entry<K, V>> {
+    abstract get(key: K): Option<V>;
+    abstract put(key: K, value: V): this;
+}
+
+export const ImmutableNativeMap = <K, V>(tuples: [K, V][]): ImmutableMap<K, V> => new ImmutableNativeMapImpl(tuples);
+
+class ImmutableNativeMapImpl<K, V> extends ImmutableMap<K, V> {
+
+    private readonly nativeMap = new Map<K, V>();
+
+    constructor(tuples: [K, V][] = []) {
+        super();
+        tuples.forEach(x => this.nativeMap.set(x[0], x[1]))
     }
 
-    get = (key: K): Option<V> =>
-        Option(this.table[this.hash(key)]).map(o => (o as Entry<K,V>).value);
-
-    put = (key: K, value: V): void => {
-        this.table[this.hash(key)] = Entry(key, value);
+    get = (key: K): Option<V> => {
+        return Option(this.nativeMap.get(key));
     }
 
-    entries = (): List<Entry<K, V>> =>
-        List(this.table.filter(e => e ? true : false));
+    [Symbol.iterator] = () =>
+        Array.from(this.nativeMap.entries()).map(x => new Entry(x[0], x[1]))[Symbol.iterator]();
 
-    keys = (): ImmutableSet<K> =>
-        new ImmutableSet(this.table.filter(e => e ? true : false).map(e => e.key))
 
-    values = (): List<V> =>
-        List(this.table.filter(e => e ? true : false).map(e => e.value));
+    reversed = (): ImmutableMap<K, V> =>
+        ImmutableNativeMap(Array.from(this.nativeMap.entries()).reverse().map(x => [x[0], x[1]]));
 
-    toString = () =>
-        this.entries().toString();
-
-    toImmutable = (): ImmutableMap<K, V> =>
-        new MutableHashMapImpl(this.table.concat());
-
-    toMutable = (): MutableMap<K, V> =>
-        new MutableHashMapImpl(this.table.concat());
+    builder = <U>() => {
+        const mapCollection = new ImmutableNativeMapImpl();
+        return new NativeMapCollectionBuilder<U>(mapCollection, mapCollection.nativeMap);
+    }
 
 }
 
-class NativeMapImpl<K, V> implements MutableMap<K, V>, ImmutableMap<K, V> {
-    constructor(readonly map = new Map<K, V>()) { }
+export const MutableNativeMap = <K, V>(tuples: [K, V][] = []): MutableMap<K, V> => new MutableNativeMapImpl(tuples);
 
-    get = (key: K): Option<V> =>
-        Option(this.map.get(key));
+class MutableNativeMapImpl<K, V> extends MutableMap<K, V> {
 
-    put = (key: K, value: V): void => {
-        this.map.set(key, value);
+    private readonly nativeMap = new Map<K, V>();
+
+    constructor(tuples: [K, V][] = []) {
+        super();
+        tuples.forEach(x => this.nativeMap.set(x[0], x[1]))
     }
 
-    entries = () =>
-        List(Array.from(this.map.entries()).map(e => Entry(e[0], e[1])));
+    get = (key: K): Option<V> => {
+        return Option(this.nativeMap.get(key));
+    }
 
-    keys = () =>
-        new ImmutableSet(Array.from(this.map.keys()));
+    put = (key: K, value: V) => {
+        this.nativeMap.set(key, value);
+        return this;
+    }
 
-    values = () =>
-        List(Array.from(this.map.values()));
+    [Symbol.iterator] = () =>
+        Array.from(this.nativeMap.entries()).map(x => new Entry(x[0], x[1]))[Symbol.iterator]();
 
-    toString = () =>
-        this.entries().toString();
 
-    toImmutable = (): ImmutableMap<K, V> =>
-        new NativeMapImpl(new Map(this.map.entries()));
+    reversed = (): ImmutableMap<K, V> =>
+        MutableNativeMap(Array.from(this.nativeMap.entries()).reverse().map(x => [x[0], x[1]]));
 
-    toMutable = (): MutableMap<K, V> =>
-        new NativeMapImpl(new Map(this.map.entries()));
+    builder = <U>() => {
+        const mapCollection = new MutableNativeMapImpl();
+        return new NativeMapCollectionBuilder<U>(mapCollection, mapCollection.nativeMap);
+    }
 
-} 
+}
+
+class NativeMapCollectionBuilder<U> implements CollectionBuilder<U> {
+
+    constructor(private mapCollection: any, private nativeMap: Map<any, any>) { }
+
+    add = (element: U) => {
+        const entry = element as any as Entry<any, any>;
+        this.nativeMap.set(entry.key, entry.value);
+        return this;
+    }
+
+    addAll = (iterable: Iterable<U>) => {
+        for (let x of iterable)
+            this.add(x);
+        return this;
+    }
+
+    build = () =>
+        this.mapCollection;
+
+}
