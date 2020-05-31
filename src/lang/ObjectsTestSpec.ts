@@ -11,5 +11,9 @@ describe("Objects", () => {
     expect(Objects.hashCode([1, 2, 3, 4, 5, 6, 7, 8, 9])).toEqual(-1369096933);
     expect(Objects.hashCode({a: 3})).toEqual(-1442153924);
   });
+  it("create", () => {
+    expect(Objects.create(String).valueOf()).toEqual("");
+    expect(Objects.create(Number).valueOf()).toEqual(0);
+  });
 
 });

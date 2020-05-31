@@ -18,7 +18,6 @@ export abstract class Collection<T> implements Iterable<T> {
     isEmpty = (): boolean =>
         this.size() === 0;
 
-    // TODO: initialValue: U = Objects.emptyValue
     reduceLeft = <U>(op: (acc: U, element: T) => U, initialValue: U): U => {
         let acc = initialValue;
         this.forEach(x => { acc = op(acc, x); });

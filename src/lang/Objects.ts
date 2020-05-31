@@ -18,4 +18,8 @@ export class Objects {
             return Objects.hashCode(JSON.stringify(value));
         return 0;
     }
+
+    static create<T>(type: (new () => T)): T {
+        return new type();
+    }
 }
