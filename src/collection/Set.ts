@@ -24,17 +24,17 @@ class ImmutableNativeSetImpl<T> extends ImmutableSet<T> {
         this.set = new Set<T>(items);
     }
 
-    contains = (element: T): boolean =>
-        this.set.has(element);
-
     [Symbol.iterator] = () =>
         this.set[Symbol.iterator]();
 
     reversed = () =>
         ImmutableNativeSet(Array.from(this.set).reverse());
 
-    builder = <U>() =>
+    protected builder = <U>() =>
         new ArrayCollectionBuilder((x: U[]) => ImmutableNativeSet(x));
+
+    contains = (element: T): boolean =>
+        this.set.has(element);
 
 }
 
@@ -49,6 +49,15 @@ class MutableNativeSetImpl<T> extends MutableSet<T> {
         this.set = new Set<T>(items);
     }
 
+    [Symbol.iterator] = () =>
+        this.set[Symbol.iterator]();
+
+    reversed = () =>
+        MutableNativeSet(Array.from(this.set).reverse());
+
+    protected builder = <U>() =>
+        new ArrayCollectionBuilder((x: U[]) => MutableNativeSet(x));
+
     add = (element: T) => {
         this.set.add(element);
         return this;
@@ -61,15 +70,6 @@ class MutableNativeSetImpl<T> extends MutableSet<T> {
 
     contains = (element: T) =>
         this.set.has(element);
-
-    [Symbol.iterator] = () =>
-        this.set[Symbol.iterator]();
-
-    reversed = () =>
-        MutableNativeSet(Array.from(this.set).reverse());
-
-    builder = <U>() =>
-        new ArrayCollectionBuilder((x: U[]) => MutableNativeSet(x));
 
 }
 
@@ -84,6 +84,17 @@ class ImmutableHashSetImpl<T> extends ImmutableSet<T> {
         items.forEach(x => this.table[this.hash(x)])
     }
 
+    protected builder = <U>() =>
+        new ArrayCollectionBuilder((x: U[]) => ImmutableHashSet(x));
+
+
+    [Symbol.iterator] = () =>
+        this.tableElements()[Symbol.iterator]();
+
+    reversed = () =>
+        ImmutableHashSet(this.tableElements());
+
+
     private hash = (key: T) => {
         const hashCode = Objects.hashCode(key);
         return hashCode ^ (hashCode >>> 16)
@@ -95,14 +106,6 @@ class ImmutableHashSetImpl<T> extends ImmutableSet<T> {
     contains = (element: T) =>
         this.table[this.hash(element)] ? true : false;
 
-    [Symbol.iterator] = () =>
-        this.tableElements()[Symbol.iterator]();
-
-    reversed = () =>
-        ImmutableHashSet(this.tableElements());
-
-    builder = <U>() =>
-        new ArrayCollectionBuilder((x: U[]) => ImmutableHashSet(x));
 }
 
 export const MutableHashSet = <T>(cl: T[] = []): MutableSet<T> => new MutableHashSetImpl(cl);
@@ -115,6 +118,16 @@ class MutableHashSetImpl<T> extends MutableSet<T> {
         super();
         this.addAll(items);
     }
+
+    protected builder = <U>() =>
+        new ArrayCollectionBuilder((x: U[]) => MutableHashSet(x));
+
+    [Symbol.iterator] = () =>
+        this.tableElements()[Symbol.iterator]();
+
+    reversed = () =>
+        MutableHashSet(this.tableElements());
+
 
     private hash = (key: T) => {
         const hashCode = Objects.hashCode(key);
@@ -136,14 +149,5 @@ class MutableHashSetImpl<T> extends MutableSet<T> {
 
     contains = (element: T) =>
         this.table[this.hash(element)] ? true : false;
-
-    [Symbol.iterator] = () =>
-        this.tableElements()[Symbol.iterator]();
-
-    reversed = () =>
-        MutableHashSet(this.tableElements());
-
-    builder = <U>() =>
-        new ArrayCollectionBuilder((x: U[]) => MutableHashSet(x));
 
 }

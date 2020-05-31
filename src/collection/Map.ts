@@ -14,6 +14,7 @@ export abstract class ImmutableMap<K, V> extends Collection<Entry<K, V>> {
 export abstract class MutableMap<K, V> extends Collection<Entry<K, V>> {
     abstract get(key: K): Option<V>;
     abstract put(key: K, value: V): this;
+    abstract toImmutable(): ImmutableMap<K, V>;
 }
 
 export const ImmutableNativeMap = <K, V>(tuples: [K, V][]): ImmutableMap<K, V> => new ImmutableNativeMapImpl(tuples);
@@ -27,8 +28,9 @@ class ImmutableNativeMapImpl<K, V> extends ImmutableMap<K, V> {
         tuples.forEach(x => this.nativeMap.set(x[0], x[1]))
     }
 
-    get = (key: K): Option<V> => {
-        return Option(this.nativeMap.get(key));
+    protected builder = <U>() => {
+        const mapCollection = new ImmutableNativeMapImpl();
+        return new NativeMapCollectionBuilder<U>(mapCollection, mapCollection.nativeMap);
     }
 
     [Symbol.iterator] = () =>
@@ -38,10 +40,10 @@ class ImmutableNativeMapImpl<K, V> extends ImmutableMap<K, V> {
     reversed = (): ImmutableMap<K, V> =>
         ImmutableNativeMap(Array.from(this.nativeMap.entries()).reverse().map(x => [x[0], x[1]]));
 
-    builder = <U>() => {
-        const mapCollection = new ImmutableNativeMapImpl();
-        return new NativeMapCollectionBuilder<U>(mapCollection, mapCollection.nativeMap);
+    get = (key: K): Option<V> => {
+        return Option(this.nativeMap.get(key));
     }
+
 
 }
 
@@ -56,13 +58,9 @@ class MutableNativeMapImpl<K, V> extends MutableMap<K, V> {
         tuples.forEach(x => this.nativeMap.set(x[0], x[1]))
     }
 
-    get = (key: K): Option<V> => {
-        return Option(this.nativeMap.get(key));
-    }
-
-    put = (key: K, value: V) => {
-        this.nativeMap.set(key, value);
-        return this;
+    protected builder = <U>() => {
+        const mapCollection = new MutableNativeMapImpl();
+        return new NativeMapCollectionBuilder<U>(mapCollection, mapCollection.nativeMap);
     }
 
     [Symbol.iterator] = () =>
@@ -72,10 +70,17 @@ class MutableNativeMapImpl<K, V> extends MutableMap<K, V> {
     reversed = (): ImmutableMap<K, V> =>
         MutableNativeMap(Array.from(this.nativeMap.entries()).reverse().map(x => [x[0], x[1]]));
 
-    builder = <U>() => {
-        const mapCollection = new MutableNativeMapImpl();
-        return new NativeMapCollectionBuilder<U>(mapCollection, mapCollection.nativeMap);
+    get = (key: K): Option<V> => {
+        return Option(this.nativeMap.get(key));
     }
+
+    put = (key: K, value: V) => {
+        this.nativeMap.set(key, value);
+        return this;
+    }
+
+    toImmutable = (): ImmutableMap<K, V> =>
+        ImmutableNativeMap(Array.from(this.nativeMap.entries()).reverse().map(x => [x[0], x[1]]));
 
 }
 

@@ -3,7 +3,7 @@ import { CollectionBuilder } from "./CollectionBuilder";
 export abstract class Collection<T> implements Iterable<T> {
     abstract [Symbol.iterator](): Iterator<T>;
     abstract reversed(): Collection<T>;
-    abstract builder<U>(): CollectionBuilder<U>;
+    protected abstract builder<U>(): CollectionBuilder<U>;
 
     forEach = (op: ((element: T) => void)): void => {
         for (let x of this) op(x);
@@ -63,6 +63,12 @@ export abstract class Collection<T> implements Iterable<T> {
             } while (!curr.done);
         return result;
 
+    }
+
+    toArray = () => {
+        const result = new Array<T>();
+        this.forEach(x => result.push(x));
+        return result;
     }
 
     toString = (): string =>
