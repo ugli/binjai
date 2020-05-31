@@ -6,18 +6,20 @@ export abstract class ImmutableSet<T> extends Collection<T> {
     abstract contains(element: T): boolean;
 }
 
-export abstract class MutableSet<T> extends Collection<T> {
+export abstract class MutableSet<T> extends ImmutableSet<T> {
     abstract contains(element: T): boolean;
     abstract add(element: T): this;
-    abstract addAll(iterable: Iterable<T>): this;
+    addAll = (iterable: Iterable<T>): this => {
+        for (let x of iterable) this.add(x);
+        return this;
+    }
 }
-
 
 export const ImmutableNativeSet = <T>(cl: T[] = []): ImmutableSet<T> => new ImmutableNativeSetImpl(cl);
 
 class ImmutableNativeSetImpl<T> extends ImmutableSet<T> {
 
-    private readonly set: Set<T>;
+    protected readonly set: Set<T>;
 
     constructor(items: T[]) {
         super();
@@ -44,7 +46,7 @@ class MutableNativeSetImpl<T> extends MutableSet<T> {
 
     private readonly set: Set<T>;
 
-    constructor(items: T[] = []) {
+    constructor(items: T[]) {
         super();
         this.set = new Set<T>(items);
     }
@@ -63,11 +65,6 @@ class MutableNativeSetImpl<T> extends MutableSet<T> {
         return this;
     }
 
-    addAll = (iterable: Iterable<T>) => {
-        for (let x of iterable) this.add(x);
-        return this;
-    }
-
     contains = (element: T) =>
         this.set.has(element);
 
@@ -79,13 +76,14 @@ class ImmutableHashSetImpl<T> extends ImmutableSet<T> {
 
     private readonly table = new Map<number, T>();
 
-    constructor(items: T[] = []) {
+    constructor(items: T[]) {
         super();
         items.forEach(x => this.table.set(this.hash(x), x));
     }
 
     protected builder = <U>() =>
         new ArrayCollectionBuilder((x: U[]) => ImmutableHashSet(x));
+
     [Symbol.iterator] = () =>
         this.table.values()[Symbol.iterator]();
 
@@ -107,9 +105,9 @@ export const MutableHashSet = <T>(cl: T[] = []): MutableSet<T> => new MutableHas
 
 class MutableHashSetImpl<T> extends MutableSet<T> {
 
-    private readonly table: T[] = [];
+    private readonly table = new Map<number, T>();
 
-    constructor(items: T[] = []) {
+    constructor(items: T[]) {
         super();
         this.addAll(items);
     }
@@ -118,10 +116,10 @@ class MutableHashSetImpl<T> extends MutableSet<T> {
         new ArrayCollectionBuilder((x: U[]) => MutableHashSet(x));
 
     [Symbol.iterator] = () =>
-        this.tableElements()[Symbol.iterator]();
+        this.table.values()[Symbol.iterator]();
 
     reversed = () =>
-        MutableHashSet(this.tableElements());
+        MutableHashSet(Array.from(this.table.values()).reverse());
 
 
     private hash = (key: T) => {
@@ -129,20 +127,13 @@ class MutableHashSetImpl<T> extends MutableSet<T> {
         return hashCode ^ (hashCode >>> 16)
     }
 
-    private tableElements = () =>
-        this.table.filter(x => x);
 
     add = (element: T) => {
-        this.table[this.hash(element)];
-        return this;
-    }
-
-    addAll = (iterable: Iterable<T>): this => {
-        for (let x of iterable) this.add(x);
+        this.table.set(this.hash(element), element);
         return this;
     }
 
     contains = (element: T) =>
-        this.table[this.hash(element)] ? true : false;
+        this.table.has(this.hash(element));
 
 }

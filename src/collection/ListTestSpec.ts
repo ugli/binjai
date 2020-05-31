@@ -10,7 +10,7 @@ describe("ArrayList", () => {
     expect(ArrayList([3, 4]).toString()).toEqual("[3, 4]");
   });
   it("toString with strings", () => {
-    expect(ArrayList([3, 4]).toString()).toEqual("[3, 4]");
+    expect(ArrayList(["3", "4"]).toString()).toEqual("[3, 4]");
   });
   it("for each", () => {
     let a = "";
@@ -70,7 +70,7 @@ describe("MutableArrayList", () => {
     expect(MutableArrayList([3, 4]).toString()).toEqual("[3, 4]");
   });
   it("toString with strings", () => {
-    expect(MutableArrayList([3, 4]).toString()).toEqual("[3, 4]");
+    expect(MutableArrayList(["3", "4"]).toString()).toEqual("[3, 4]");
   });
   it("for each", () => {
     let a = "";
