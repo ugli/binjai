@@ -19,7 +19,7 @@ class ImmutableNativeSetImpl<T> extends ImmutableSet<T> {
 
     private readonly set: Set<T>;
 
-    constructor(items: T[] = []) {
+    constructor(items: T[]) {
         super();
         this.set = new Set<T>(items);
     }
