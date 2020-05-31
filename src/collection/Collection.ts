@@ -43,25 +43,20 @@ export abstract class Collection<T> implements Iterable<T> {
     }
 
     flatMap = <U>(op: ((element: T) => Iterable<U>)): Collection<U> => {
-        const mapped = this.map(op);
         const builder = this.builder<U>();
-        mapped.forEach(x => builder.addAll(x));
+        this.forEach(x => builder.addAll(op(x)));
         return builder.build();
     }
 
     mkString = (separator = " "): string => {
-        let result = "";
-        const iter = this[Symbol.iterator]();
-        let curr = iter.next();
-        if (!curr.done)
-            do {
-                result = `${result}${(<any>curr.value).toString()}`
-                curr = iter.next();
-                if (!curr.done)
-                    result = `${result}${separator}`
-            } while (!curr.done);
-        return result;
-
+        let first = true;
+        return this.reduceLeft((acc, x) => {
+            if (first) {
+                first = false
+                return `${x}`;
+            }
+            return `${acc}${separator}${x}`;
+        }, "");
     }
 
     toArray = () => {

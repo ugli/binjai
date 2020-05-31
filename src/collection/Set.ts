@@ -77,22 +77,20 @@ export const ImmutableHashSet = <T>(cl: T[] = []): ImmutableSet<T> => new Immuta
 
 class ImmutableHashSetImpl<T> extends ImmutableSet<T> {
 
-    private readonly table: T[] = [];
+    private readonly table = new Map<number, T>();
 
     constructor(items: T[] = []) {
         super();
-        items.forEach(x => this.table[this.hash(x)])
+        items.forEach(x => this.table.set(this.hash(x), x));
     }
 
     protected builder = <U>() =>
         new ArrayCollectionBuilder((x: U[]) => ImmutableHashSet(x));
-
-
     [Symbol.iterator] = () =>
-        this.tableElements()[Symbol.iterator]();
+        this.table.values()[Symbol.iterator]();
 
     reversed = () =>
-        ImmutableHashSet(this.tableElements());
+        ImmutableHashSet(Array.from(this.table.values()).reverse());
 
 
     private hash = (key: T) => {
@@ -100,11 +98,8 @@ class ImmutableHashSetImpl<T> extends ImmutableSet<T> {
         return hashCode ^ (hashCode >>> 16)
     }
 
-    private tableElements = () =>
-        this.table.filter(x => x);
-
     contains = (element: T) =>
-        this.table[this.hash(element)] ? true : false;
+        this.table.has(this.hash(element));
 
 }
 
