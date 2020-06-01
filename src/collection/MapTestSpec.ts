@@ -16,8 +16,8 @@ describe("ImmutableNativeMap", () => {
     expect(ImmutableNativeMap([[3, "a"], [4, "b"]]).mkString()).toEqual("[3=a] [4=b]");
   });
   it("contains", () => {
-    expect(ImmutableNativeMap([[3, "a"], [4, "b"]]).containsKey(3)).toBeTruthy();
-    expect(ImmutableNativeMap([[3, "a"], [4, "b"]]).containsKey(5)).toBeFalsy();
+    expect(ImmutableNativeMap([[3, "a"], [4, "b"]]).contains(3)).toBeTruthy();
+    expect(ImmutableNativeMap([[3, "a"], [4, "b"]]).contains(5)).toBeFalsy();
   });
   it("for each", () => {
     let a = "";
@@ -70,8 +70,8 @@ describe("MutableNativeMap", () => {
     expect(MutableNativeMap([[3, "a"], [4, "b"]]).mkString()).toEqual("[3=a] [4=b]");
   });
   it("contains", () => {
-    expect(MutableNativeMap([[3, "a"], [4, "b"]]).containsKey(3)).toBeTruthy();
-    expect(MutableNativeMap([[3, "a"], [4, "b"]]).containsKey(5)).toBeFalsy();
+    expect(MutableNativeMap([[3, "a"], [4, "b"]]).contains(3)).toBeTruthy();
+    expect(MutableNativeMap([[3, "a"], [4, "b"]]).contains(5)).toBeFalsy();
   });
   it("for each", () => {
     let a = "";

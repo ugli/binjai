@@ -1,47 +1,37 @@
 import { Option } from "../lang/Option";
 import { Collection } from "./Collection";
 import { CollectionBuilder } from "./CollectionBuilder";
-import { MutableArrayList } from "./List";
+import { MutableArrayList, List } from "./List";
 
 export class Entry<K, V> {
     constructor(readonly key: K, readonly value: V) { }
     toString = () => `[${this.key}=${this.value}]`;
 }
 
-const mapFunc = <K, V, U>(map: ImmutableMap<K, V> | MutableMap<K, V>, op: ((element: Entry<K, V>) => U)): Collection<U> => {
-    const list = MutableArrayList<U>();
-    map.forEach(x => list.add(op(x)));
-    return list.toList();
+export abstract class AbstractMap<K, V> extends Collection<Entry<K, V>> {
+    map = <U>(op: ((element: Entry<K, V>) => U)): Collection<U> => {
+        const list = MutableArrayList<U>();
+        this.forEach(x => list.add(op(x)));
+        return list.toList();
+    }
+
+    flatMap = <U>(op: ((element: Entry<K, V>) => Iterable<U>)): Collection<U> => {
+        const list = MutableArrayList<U>();
+        this.forEach(x => list.addAll(op(x)));
+        return list.toList();
+    }
+
 }
 
-const flatMapFunc = <K, V, U>(map: ImmutableMap<K, V> | MutableMap<K, V>, op: ((element: Entry<K, V>) => Iterable<U>)): Collection<U> => {
-    const list = MutableArrayList<U>();
-    map.forEach(x => list.addAll(op(x)));
-    return list.toList();
-}
-
-
-export abstract class ImmutableMap<K, V> extends Collection<Entry<K, V>> {
-    map = <U>(op: ((element: Entry<K, V>) => U)): Collection<U> =>
-        mapFunc(this, op);
-
-    flatMap = <U>(op: ((element: Entry<K, V>) => Iterable<U>)): Collection<U> =>
-        flatMapFunc(this, op);
-
+export abstract class ImmutableMap<K, V> extends AbstractMap<K, V> {
     abstract get(key: K): Option<V>;
-    abstract containsKey(key: K): boolean;
+    abstract contains(key: K): boolean;
 }
 
-export abstract class MutableMap<K, V> extends Collection<Entry<K, V>> {
-    map = <U>(op: ((element: Entry<K, V>) => U)): Collection<U> =>
-        mapFunc(this, op);
-
-    flatMap = <U>(op: ((element: Entry<K, V>) => Iterable<U>)): Collection<U> =>
-        flatMapFunc(this, op);
-
+export abstract class MutableMap<K, V> extends AbstractMap<K, V> {
     abstract get(key: K): Option<V>;
     abstract put(key: K, value: V): this;
-    abstract containsKey(key: K): boolean;
+    abstract contains(key: K): boolean;
     abstract toImmutable(): ImmutableMap<K, V>;
 }
 
@@ -52,7 +42,7 @@ class ImmutableNativeMapImpl<K, V> extends ImmutableMap<K, V> {
 
     constructor(tuples: [K, V][]) {
         super();
-        tuples.forEach(x => this.nativeMap.set(x[0], x[1]))
+        tuples.forEach(x => this.nativeMap.set(x[0], x[1]));
     }
 
     protected builder = <U>() => {
@@ -71,7 +61,7 @@ class ImmutableNativeMapImpl<K, V> extends ImmutableMap<K, V> {
         return Option(this.nativeMap.get(key));
     }
 
-    containsKey = (key: K) =>
+    contains = (key: K) =>
         this.nativeMap.has(key);
 
 }
@@ -108,12 +98,11 @@ class MutableNativeMapImpl<K, V> extends MutableMap<K, V> {
         return this;
     }
 
-    containsKey = (key: K) =>
+    contains = (key: K) =>
         this.nativeMap.has(key);
 
-
     toImmutable = (): ImmutableMap<K, V> =>
-        ImmutableNativeMap(Array.from(this.nativeMap.entries()).reverse().map(x => [x[0], x[1]]));
+        ImmutableNativeMap(Array.from(this.nativeMap.entries()).map(x => [x[0], x[1]]));
 
 }
 
