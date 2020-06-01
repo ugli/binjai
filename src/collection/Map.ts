@@ -8,28 +8,41 @@ export class Entry<K, V> {
 }
 
 export abstract class ImmutableMap<K, V> extends Collection<Entry<K, V>> {
+    map = (x: any) => {
+        throw Error("Unsupported operation");
+    }
+    flatMap = (x: any) => {
+        throw Error("Unsupported operation");
+    }
     abstract get(key: K): Option<V>;
+    abstract containsKey(key: K): boolean;
 }
 
 export abstract class MutableMap<K, V> extends Collection<Entry<K, V>> {
+    map = (x: any) => {
+        throw Error("Unsupported operation");
+    }
+    flatMap = (x: any) => {
+        throw Error("Unsupported operation");
+    }
     abstract get(key: K): Option<V>;
     abstract put(key: K, value: V): this;
+    abstract containsKey(key: K): boolean;
     abstract toImmutable(): ImmutableMap<K, V>;
 }
 
-export const ImmutableNativeMap = <K, V>(tuples: [K, V][]): ImmutableMap<K, V> => new ImmutableNativeMapImpl(tuples);
+export const ImmutableNativeMap = <K, V>(tuples: [K, V][] = []): ImmutableMap<K, V> => new ImmutableNativeMapImpl(tuples);
 
 class ImmutableNativeMapImpl<K, V> extends ImmutableMap<K, V> {
-
     private readonly nativeMap = new Map<K, V>();
 
-    constructor(tuples: [K, V][] = []) {
+    constructor(tuples: [K, V][]) {
         super();
         tuples.forEach(x => this.nativeMap.set(x[0], x[1]))
     }
 
     protected builder = <U>() => {
-        const mapCollection = new ImmutableNativeMapImpl();
+        const mapCollection = new ImmutableNativeMapImpl([]);
         return new NativeMapCollectionBuilder<U>(mapCollection, mapCollection.nativeMap);
     }
 
@@ -44,6 +57,8 @@ class ImmutableNativeMapImpl<K, V> extends ImmutableMap<K, V> {
         return Option(this.nativeMap.get(key));
     }
 
+    containsKey = (key: K) =>
+        this.nativeMap.has(key);
 
 }
 
@@ -78,6 +93,10 @@ class MutableNativeMapImpl<K, V> extends MutableMap<K, V> {
         this.nativeMap.set(key, value);
         return this;
     }
+
+    containsKey = (key: K) =>
+        this.nativeMap.has(key);
+
 
     toImmutable = (): ImmutableMap<K, V> =>
         ImmutableNativeMap(Array.from(this.nativeMap.entries()).reverse().map(x => [x[0], x[1]]));
