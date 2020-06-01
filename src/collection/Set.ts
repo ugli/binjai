@@ -121,12 +121,10 @@ class MutableHashSetImpl<T> extends MutableSet<T> {
     reversed = () =>
         MutableHashSet(Array.from(this.table.values()).reverse());
 
-
     private hash = (key: T) => {
         const hashCode = Objects.hashCode(key);
         return hashCode ^ (hashCode >>> 16)
     }
-
 
     add = (element: T) => {
         this.table.set(this.hash(element), element);
