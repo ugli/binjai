@@ -24,11 +24,12 @@ describe("ImmutableNativeMap", () => {
     ImmutableNativeMap([[1, "a"], [2, "a"], [3, "a"], [4, "a"], [5, "b"]]).forEach(e => a = a + e.key);
     expect(a).toEqual("12345");
   });
-  it("map numbers", () => {
-    expect(() => ImmutableNativeMap([[3, "a"]]).map(() => "M")).toThrow(Error("Unsupported operation"));
+  it("map entries", () => {
+    expect(ImmutableNativeMap([[1, "a"], [2, "b"], [3, "c"], [4, "d"]]).map((x) => `${x.value}${x.key}`).toString())
+      .toEqual("[a1, b2, c3, d4]");
   });
   it("flatMap numberArray", () => {
-    expect(() => ImmutableNativeMap([[30, "a"]]).flatMap(() => ["M", "N"])).toThrow(Error("Unsupported operation"));
+    expect(ImmutableNativeMap([[10, "a"],[20, "a"]]).flatMap(x => [x.key, x.key+1]).toString()).toEqual("[10, 11, 20, 21]");
   });
   it("filter", () => {
     expect(ImmutableNativeMap([[3, "a"], [4, "b"]]).filter(e => e.key % 2 === 0).toString()).toEqual("[[4=b]]");
@@ -77,11 +78,12 @@ describe("MutableNativeMap", () => {
     MutableNativeMap([[1, "a"], [2, "a"], [3, "a"], [4, "a"], [5, "b"]]).forEach(e => a = a + e.key);
     expect(a).toEqual("12345");
   });
-  it("map numbers", () => {
-    expect(() => MutableNativeMap([[3, "a"]]).map(() => "M")).toThrow(Error("Unsupported operation"));
+  it("map entries", () => {
+    expect(ImmutableNativeMap([[1, "a"], [2, "b"], [3, "c"], [4, "d"]]).map((x) => `${x.value}${x.key}`).toString())
+      .toEqual("[a1, b2, c3, d4]");
   });
   it("flatMap numberArray", () => {
-    expect(() => MutableNativeMap([[30, "a"]]).flatMap(() => ["M", "N"])).toThrow(Error("Unsupported operation"));
+    expect(ImmutableNativeMap([[10, "a"],[20, "a"]]).flatMap(x => [x.key, x.key+1]).toString()).toEqual("[10, 11, 20, 21]");
   });
   it("filter", () => {
     expect(MutableNativeMap([[3, "a"], [4, "b"]]).filter(e => e.key % 2 === 0).toString()).toEqual("[[4=b]]");

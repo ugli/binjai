@@ -32,6 +32,7 @@ export abstract class List<T> extends Collection<T> {
 export abstract class MutableList<T> extends Collection<T> {
     abstract get(index: number): T;
     abstract add(element: T): this;
+    abstract addAll(elements: Iterable<T>): this;
     abstract toList(): List<T>;
 
     groupBy = <K>(keyFunc: (item: T) => K): ImmutableMap<K, List<T>> =>
@@ -92,6 +93,11 @@ class MutableArrayListImpl<T> extends MutableList<T> {
 
     add = (element: T): this => {
         this.array.push(element);
+        return this;
+    }
+
+    addAll(elements: Iterable<T>): this {
+        this.array.push(...elements);
         return this;
     }
 

@@ -125,6 +125,9 @@ describe("MutableArrayList", () => {
     const list = MutableArrayList([new Abba("a", 2), new Abba("b", 1), new Abba("a", 3)]);
     expect(list.groupBy(e => e.name).toString()).toEqual("[[a=[name=a, x=2, name=a, x=3]], [b=[name=b, x=1]]]");
   });
+  it("Add all", () => {
+    expect(MutableArrayList<number>().addAll([0,1,2]).toString()).toEqual("[0, 1, 2]");
+  });
 });
 
 class Abba {

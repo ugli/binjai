@@ -1,30 +1,44 @@
 import { Option } from "../lang/Option";
 import { Collection } from "./Collection";
 import { CollectionBuilder } from "./CollectionBuilder";
+import { MutableArrayList } from "./List";
 
 export class Entry<K, V> {
     constructor(readonly key: K, readonly value: V) { }
     toString = () => `[${this.key}=${this.value}]`;
 }
 
+const mapFunc = <K, V, U>(map: ImmutableMap<K, V> | MutableMap<K, V>, op: ((element: Entry<K, V>) => U)): Collection<U> => {
+    const list = MutableArrayList<U>();
+    map.forEach(x => list.add(op(x)));
+    return list.toList();
+}
+
+const flatMapFunc = <K, V, U>(map: ImmutableMap<K, V> | MutableMap<K, V>, op: ((element: Entry<K, V>) => Iterable<U>)): Collection<U> => {
+    const list = MutableArrayList<U>();
+    map.forEach(x => list.addAll(op(x)));
+    return list.toList();
+}
+
+
 export abstract class ImmutableMap<K, V> extends Collection<Entry<K, V>> {
-    map = (x: any) => {
-        throw Error("Unsupported operation");
-    }
-    flatMap = (x: any) => {
-        throw Error("Unsupported operation");
-    }
+    map = <U>(op: ((element: Entry<K, V>) => U)): Collection<U> =>
+        mapFunc(this, op);
+
+    flatMap = <U>(op: ((element: Entry<K, V>) => Iterable<U>)): Collection<U> =>
+        flatMapFunc(this, op);
+
     abstract get(key: K): Option<V>;
     abstract containsKey(key: K): boolean;
 }
 
 export abstract class MutableMap<K, V> extends Collection<Entry<K, V>> {
-    map = (x: any) => {
-        throw Error("Unsupported operation");
-    }
-    flatMap = (x: any) => {
-        throw Error("Unsupported operation");
-    }
+    map = <U>(op: ((element: Entry<K, V>) => U)): Collection<U> =>
+        mapFunc(this, op);
+
+    flatMap = <U>(op: ((element: Entry<K, V>) => Iterable<U>)): Collection<U> =>
+        flatMapFunc(this, op);
+
     abstract get(key: K): Option<V>;
     abstract put(key: K, value: V): this;
     abstract containsKey(key: K): boolean;
