@@ -1,71 +1,61 @@
-import { CollectionBuilder } from "./CollectionBuilder";
+import {Option} from "../lang/Option";
+import {MutableList} from "./mutable/Collection";
 
-export abstract class Collection<T> implements Iterable<T> {
-    abstract [Symbol.iterator](): Iterator<T>;
-    abstract reversed(): Collection<T>;
-    protected abstract builder<U>(): CollectionBuilder<U>;
+export interface Collection<T> extends Iterable<T> {
+    [Symbol.iterator](): Iterator<T>;
+    forEach(op: ((element: T) => void)): void,
+    size(): number;
+    isEmpty(): boolean;
+    mkString(separator?: string): string;
+}
 
-    forEach = (op: ((element: T) => void)): void => {
-        for (let x of this) op(x);
-    }
+export interface List<T> extends Collection<T> {
+    contains(element: T): boolean;
+    firstIndexOf(element: T): number;
+    lastIndexOf(element: T): number;
+    forAll(op: ((element: T) => boolean)): boolean;
+    exists(op: ((element: T) => boolean)): boolean;
+    get(index: number): Option<T>;
+    find(op: ((element: T) => boolean)): Option<T>;
+    reverse(): List<T>;
+    sort(op?: (a: T, b: T) => number): List<T>;
+    reduceLeft<U>(op: (acc: U, element: T) => U, initialValue: U): U;
+    reduceRight<U>(op: (acc: U, element: T) => U, initialValue: U): U;
+    filter(op: ((element: T) => boolean)): List<T>;
+    map<U>(op: ((element: T) => U)): List<U>;
+    flatMap <U>(op: ((element: T) => Iterable<U>)): List<U>;
+    groupBy<K>(op: (element: T) => K): ImmutableMap<K, List<T>>;
+    partition(size: number): List<List<T>>;
+    splice(start: number, end?: number): List<T>;
+    toArray(): Array<T>;
+    toSet(): ImmutableSet<T>;
+    toMutable(): MutableList<T>;
+}
 
-    size = (): number => {
-        let result = 0;
-        this.forEach(() => result += 1);
-        return result;
-    }
+export interface ImmutableSet<T> extends Collection<T> {
+    contains(element: T): boolean;
+    forAll(op: ((element: T) => boolean)): boolean;
+    exists(op: ((element: T) => boolean)): boolean;
+    find(op: ((element: T) => boolean)): Option<T>;
+    reduce<U>(op: (acc: U, element: T) => U, initialValue: U): U;
+    filter(op: ((element: T) => boolean)): ImmutableSet<T>;
+    map<U>(op: ((element: T) => U)): ImmutableSet<U>;
+    flatMap<U>(op: ((element: T) => Iterable<U>)): ImmutableSet<U>;
+    toList(): List<T>;
+    toSet(): Set<T>;
+   // toMutable(): MutableSet<T>;
+}
 
-    isEmpty = (): boolean =>
-        this.size() === 0;
+export class Entry<K, V> {
+    constructor(readonly key: K, readonly value: V) { }
+    toString = () => `[${this.key}=${this.value}]`;
+}
 
-    reduceLeft = <U>(op: (acc: U, element: T) => U, initialValue: U): U => {
-        let acc = initialValue;
-        this.forEach(x => { acc = op(acc, x); });
-        return acc;
-    }
-
-    reduceRight = <U>(op: (acc: U, element: T) => U, initialValue: U): U =>
-        this.reversed().reduceLeft(op, initialValue);
-
-    map = <U>(op: ((element: T) => U)): Collection<U> => {
-        const builder = this.builder<U>();
-        this.forEach(x => builder.add(op(x)));
-        return builder.build();
-    }
-
-    filter = (op: ((element: T) => boolean)): Collection<T> => {
-        const builder = this.builder<T>();
-        this.forEach(x => {
-            if (op(x))
-                builder.add(x);
-        });
-        return builder.build();
-    }
-
-    flatMap = <U>(op: ((element: T) => Iterable<U>)): Collection<U> => {
-        const builder = this.builder<U>();
-        this.forEach(x => builder.addAll(op(x)));
-        return builder.build();
-    }
-
-    mkString = (separator = " "): string => {
-        let first = true;
-        return this.reduceLeft((acc, x) => {
-            if (first) {
-                first = false
-                return `${x}`;
-            }
-            return `${acc}${separator}${x}`;
-        }, "");
-    }
-
-    toArray = () => {
-        const result = new Array<T>();
-        this.forEach(x => result.push(x));
-        return result;
-    }
-
-    toString = (): string =>
-        `[${this.mkString(", ")}]`
-
+export interface ImmutableMap<K, V> extends Collection<Entry<K, V>> {
+    contains(key: K): boolean;
+    get(key: K): Option<V>;
+    filter(op: ((entry: Entry<K, V>) => boolean)): ImmutableMap<K, V>;
+    map<U>(op: (entry: Entry<K, V>) => U): List<U>;
+    flatMap<U>(op: (entry: Entry<K, V>) => Iterable<U>): List<U>;
+    //toMutable(): MutableMap<K, V>;
 }
