@@ -1,4 +1,4 @@
-name: Publish to registry.npmjs.org
+name: binjai pipeline
 
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
