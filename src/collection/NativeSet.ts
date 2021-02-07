@@ -1,6 +1,8 @@
 import {ImmutableSet} from "./Collection";
 import {ArrayList} from "./ArrayList";
 import {Option} from "../lang/Option";
+import {MutableSet} from "./mutable/Collection";
+import {MutableNativeSet} from "./mutable/MutableNativeSet";
 
 export class NativeSet<T> implements ImmutableSet<T> {
 
@@ -69,5 +71,9 @@ export class NativeSet<T> implements ImmutableSet<T> {
 
     toString = () =>
         `[${this.mkString(",")}]`
+
+    toMutable(): MutableSet<T> {
+        return new MutableNativeSet(this.toArray());
+    }
 
 }

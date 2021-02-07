@@ -83,3 +83,8 @@ test("toSet", () => {
     expect(numbers.has(4)).toBeTruthy();
     expect(numbers.has(5)).toBeFalsy();
 });
+
+
+test("toMutable", () => {
+    expect(NativeSet.of(1, 2, 3, 4).toMutable().toString()).toEqual("[1,2,3,4]");
+});

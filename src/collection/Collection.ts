@@ -1,5 +1,5 @@
 import {Option} from "../lang/Option";
-import {MutableList} from "./mutable/Collection";
+import {MutableList, MutableSet} from "./mutable/Collection";
 
 export interface Collection<T> extends Iterable<T> {
     [Symbol.iterator](): Iterator<T>;
@@ -43,7 +43,7 @@ export interface ImmutableSet<T> extends Collection<T> {
     flatMap<U>(op: ((element: T) => Iterable<U>)): ImmutableSet<U>;
     toList(): List<T>;
     toSet(): Set<T>;
-   // toMutable(): MutableSet<T>;
+    toMutable(): MutableSet<T>;
 }
 
 export class Entry<K, V> {
