@@ -1,4 +1,4 @@
-name: Node.js Package
+name: Publish to registry.npmjs.org
 
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
@@ -18,7 +18,6 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '14.x'
-          registry-url: 'https://registry.npmjs.org'
       - run: npm ci
       - run: npm run publish-lib
         env:
