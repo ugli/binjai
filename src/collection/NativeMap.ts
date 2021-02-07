@@ -8,9 +8,16 @@ export class NativeMap<K, V> implements ImmutableMap<K, V> {
     constructor(private readonly nativeMap = new Map<K, V>()) {
     }
 
-    static fromTuples<K, V>(tuples: [K, V][] = []): NativeMap<K, V> {
+    static of<K, V>(...tuples: [K, V][]): NativeMap<K, V> {
         const map = new Map<K, V>();
         tuples.forEach(x => map.set(x[0], x[1]));
+        return new NativeMap<K, V>(map);
+    }
+
+    static from<K, V>(iterable: Iterable<Entry<K, V>>): NativeMap<K, V> {
+        const map = new Map<K, V>();
+        for (let e of iterable)
+            map.set(e.key, e.value);
         return new NativeMap<K, V>(map);
     }
 
@@ -31,17 +38,17 @@ export class NativeMap<K, V> implements ImmutableMap<K, V> {
         Option(this.nativeMap.get(key));
 
     forEach = (op: (element: Entry<K, V>) => void) => {
-        for (let e of this.nativeMap.entries())
-            op(new Entry(e[0], e[1]))
+        for (let e of this)
+            op(e);
     };
 
-    filter = (op: (entry: Entry<K, V>) => boolean) =>
-        NativeMap.fromTuples(Array
-            .from(this.nativeMap.entries())
-            .map(x => new Entry(x[0], x[1]))
-            .filter(op)
-            .map(e => [e.key, e.value])
-        );
+    filter = (op: (entry: Entry<K, V>) => boolean) =>{
+        const result = new Array<Entry<K, V>>();
+        for (let e of this)
+            if (op(e))
+                result.push(e)
+        return NativeMap.from(result);
+    };
 
     map = <U>(op: (entry: Entry<K, V>) => U) => {
         const result = new Array<U>();
@@ -63,6 +70,6 @@ export class NativeMap<K, V> implements ImmutableMap<K, V> {
             .map(e => e.toString()).join(separator);
 
     toString = (): string =>
-        `[${this.mkString(", ")}]`
+        `[${this.mkString(",")}]`
 
 }

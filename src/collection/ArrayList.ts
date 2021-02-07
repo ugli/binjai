@@ -86,7 +86,7 @@ export class ArrayList<T> implements List<T> {
         this.array.join(separator);
 
     toString = () =>
-        `[${this.mkString(", ")}]`
+        `[${this.mkString(",")}]`
 
     groupBy<K>(op: (element: T) => K): ImmutableMap<K, List<T>> {
         const arrayMap = new Map<K, T[]>()
