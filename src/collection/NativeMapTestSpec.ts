@@ -62,3 +62,22 @@ test("flatMap", () => {
     const result = NativeMap.of([1,"w"], [2, "q"]).flatMap(t => [t.key, t.value]).toString();
     expect(result).toEqual("[1,w,2,q]");
 });
+
+test("toMutable", () => {
+    const map1 = NativeMap.of([1,"w"], [2, "q"]);
+    expect(map1.toString()).toEqual("[[1=w],[2=q]]");
+    const map2 = map1.toMutable();
+    expect(map2.toString()).toEqual("[[1=w],[2=q]]");
+    map2.put(3, "f");
+    expect(map2.toString()).toEqual("[[1=w],[2=q],[3=f]]");
+    expect(map1.toString()).toEqual("[[1=w],[2=q]]");
+});
+
+test("toMap", () => {
+    const map1 = NativeMap.of([1,"w"], [2, "q"]);
+    const map2 = map1.toMap();
+    map2.set(3, "f");
+    expect(map2.size).toEqual(3);
+    expect(map1.size()).toEqual(2);
+});
+

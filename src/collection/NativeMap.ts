@@ -1,7 +1,7 @@
 import {Entry, ImmutableMap} from "./Collection";
 import {Option} from "../lang/Option";
 import {ArrayList} from "./ArrayList";
-
+import {MutableNativeMap} from "./mutable/MutableNativeMap";
 
 export class NativeMap<K, V> implements ImmutableMap<K, V> {
 
@@ -71,5 +71,11 @@ export class NativeMap<K, V> implements ImmutableMap<K, V> {
 
     toString = (): string =>
         `[${this.mkString(",")}]`
+
+    toMutable = () =>
+      new MutableNativeMap(new Map(this.nativeMap.entries()));
+
+    toMap = () =>
+        new Map(this.nativeMap.entries())
 
 }

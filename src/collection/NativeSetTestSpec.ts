@@ -86,5 +86,11 @@ test("toSet", () => {
 
 
 test("toMutable", () => {
-    expect(NativeSet.of(1, 2, 3, 4).toMutable().toString()).toEqual("[1,2,3,4]");
+    const set1 = NativeSet.of(1, 2, 3, 4);
+    const set2 = set1.toMutable();
+    expect(set1.toString()).toEqual("[1,2,3,4]");
+    expect(set2.toString()).toEqual("[1,2,3,4]");
+    set2.add(8);
+    expect(set1.toString()).toEqual("[1,2,3,4]");
+    expect(set2.toString()).toEqual("[1,2,3,4,8]");
 });

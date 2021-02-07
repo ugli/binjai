@@ -1,5 +1,5 @@
 import {Option} from "../../lang/Option";
-import {Collection, ImmutableSet, List} from "../Collection";
+import {Collection, Entry, ImmutableMap, ImmutableSet, List} from "../Collection";
 
 export interface MutableList<T> extends Collection<T> {
     contains(element: T): boolean;
@@ -39,16 +39,13 @@ export interface MutableSet<T> extends Collection<T> {
 
 }
 
-export class MutableEntry<K, V> {
-    constructor(readonly key: K, public value: V) { }
-    toString = () => `[${this.key}=${this.value}]`;
-}
-
-export interface MutableMap<K, V> extends Collection<MutableEntry<K, V>> {
+export interface MutableMap<K, V> extends Collection<Entry<K, V>> {
     contains(key: K): boolean;
     get(key: K): Option<V>;
-    put(key: K, value: V): this;
-    toMap(): Map<K, V>;
+    put(key: K, value: V): void;
+    clear(): void;
+    toImmutable(): ImmutableMap<K, V>;
+    toMap(): Map<K,V>;
 }
 
 

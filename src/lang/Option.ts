@@ -4,6 +4,7 @@ export const Option = <T>(value: any = undefined): Option<T> =>
 export interface Option<T> {
     filter(op: ((t: T) => boolean)): Option<T>;
     map<U>(op: ((t: T) => U)): Option<U>;
+    get(): T;
     isDefined(): boolean;
     orElse(e: T): T;
     orUndefined(): T | undefined;
@@ -18,6 +19,7 @@ class Some<T> implements Option<T> {
     orElse = () => this.value;
     orUndefined = () => this.value;
     orThrow = () => this.value;
+    get = () => this.value;
     eitherOr = (eitherFunc: (t: T) => void, orFunc: () => void) => eitherFunc(this.value);
     filter = (op: (t: T) => boolean): Option<T> => op(this.value) ? this : Option();
     map = <U>(op: (t: T) => U) => Option<U>(op(this.value));
@@ -29,6 +31,7 @@ class None<T> implements Option<T> {
     orElse = (e: T) => e;
     orUndefined = () => undefined;
     orThrow = (error: Error) => { throw error };
+    get = () => { throw new Error("No value")};
     eitherOr = (eitherFunc: (t: T) => void, orFunc: () => void) => orFunc();
     filter = () => Option<T>();
     map = <U>(): Option<U> => Option<U>();
