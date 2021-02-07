@@ -68,6 +68,6 @@ export class NativeSet<T> implements ImmutableSet<T> {
         this.toArray().join(separator);
 
     toString = () =>
-        `[${this.mkString(", ")}]`
+        `[${this.mkString(",")}]`
 
 }

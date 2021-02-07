@@ -113,8 +113,8 @@ test("reverse", () => {
 });
 
 test("toSet", () => {
-    expect(ArrayList.of(1, 2, 3).toSet().toString()).toEqual("[1, 2, 3]");
-    expect(ArrayList.of(1, 2, 3, 2).toSet().toString()).toEqual("[1, 2, 3]");
+    expect(ArrayList.of(1, 2, 3).toSet().toString()).toEqual("[1,2,3]");
+    expect(ArrayList.of(1, 2, 3, 2).toSet().toString()).toEqual("[1,2,3]");
 });
 
 test("splice", () => {
@@ -125,7 +125,7 @@ test("splice", () => {
 });
 
 test("toMutable", () => {
-    expect(ArrayList.of(1, 2, 3, 2).toMutable().toString()).toEqual("[1, 2, 3, 2]");
+    expect(ArrayList.of(1, 2, 3, 2).toMutable().toString()).toEqual("[1,2,3,2]");
 });
 
 

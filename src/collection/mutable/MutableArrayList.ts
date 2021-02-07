@@ -8,6 +8,10 @@ export class MutableArrayList<T> implements MutableList<T> {
     constructor(private array: T[]) {
     }
 
+    static of<T>(...elements: T[]): MutableArrayList<T> {
+        return new MutableArrayList<T>(elements);
+    }
+
     [Symbol.iterator] = () =>
         this.array[Symbol.iterator]();
 
@@ -41,11 +45,13 @@ export class MutableArrayList<T> implements MutableList<T> {
     find = (op: (element: T) => boolean): Option<T> =>
         Option(this.array.find(op));
 
-    reverse = () =>
+    reverse = (): void => {
         this.array.reverse();
+    }
 
-    sort = (op?: (a: T, b: T) => number) =>
+    sort = (op?: (a: T, b: T) => number): void => {
         this.array.sort(op);
+    }
 
     toArray = () =>
         this.array.concat();
@@ -57,26 +63,26 @@ export class MutableArrayList<T> implements MutableList<T> {
         this.array.join(separator);
 
     toString = () =>
-        `[${this.mkString(", ")}]`
+        `[${this.mkString(",")}]`
 
-    add = (element: T) =>
+    add = (element: T): void => {
         this.array.push(element);
+    }
 
-    addAll = (elements: Iterable<T>) =>
-        this.array.concat(...elements);
+    addAll = (elements: Iterable<T>): void => {
+        this.array = this.array.concat(...elements);
+    }
 
-    clear = () =>
+    clear = (): void => {
         this.array = [];
+    }
 
-    remove = (element: T) =>
+    remove = (element: T): void => {
         this.array = this.array.filter(e => e != element);
+    }
 
-    removeAll = (elements: Iterable<T>) => {
-        const newArray = new Array<T>();
-        for (let t of elements)
-            if (!this.contains(t))
-                newArray.push(t);
-        this.array = newArray;
+    removeAll = (elements: Iterable<T>): void => {
+        this.array = this.array.filter(e => !Array.from(elements).includes(e));
     }
 
     toList = () =>

@@ -6,17 +6,17 @@ test("empty set", () => {
 });
 
 test("should contain unique values", () => {
-    expect(NativeSet.of(1,2,3,2,1).toString()).toEqual("[1, 2, 3]");
-    expect(NativeSet.of("1","2","3","2","1").toString()).toEqual("[1, 2, 3]");
-    expect(NativeSet.of(true, false, true).toString()).toEqual("[true, false]");
+    expect(NativeSet.of(1,2,3,2,1).toString()).toEqual("[1,2,3]");
+    expect(NativeSet.of("1","2","3","2","1").toString()).toEqual("[1,2,3]");
+    expect(NativeSet.of(true, false, true).toString()).toEqual("[true,false]");
 });
 
 test("toString with numbers", () => {
-    expect(NativeSet.of(3, 4).toString()).toEqual("[3, 4]");
+    expect(NativeSet.of(3, 4).toString()).toEqual("[3,4]");
 });
 
 test("toString with strings", () => {
-    expect(NativeSet.of("3", "4").toString()).toEqual("[3, 4]");
+    expect(NativeSet.of("3", "4").toString()).toEqual("[3,4]");
 });
 
 test("for each", () => {
@@ -47,23 +47,23 @@ test("find", () => {
 });
 
 test("map numbers", () => {
-    expect(NativeSet.of(3, 4).map(n => `M${n}`).toString()).toEqual("[M3, M4]");
+    expect(NativeSet.of(3, 4).map(n => `M${n}`).toString()).toEqual("[M3,M4]");
 });
 
 test("flatMap numberArray", () => {
     const list = NativeSet.of(10, 20).flatMap(n => [n, n + 1]);
     expect(list.size()).toEqual(4);
-    expect(list.toString()).toEqual("[10, 11, 20, 21]");
+    expect(list.toString()).toEqual("[10,11,20,21]");
 });
 
 test("flatMap numberSet", () => {
     const list = NativeSet.of(10, 20).flatMap(n => NativeSet.of(n, n + 1));
     expect(list.size()).toEqual(4);
-    expect(list.toString()).toEqual("[10, 11, 20, 21]");
+    expect(list.toString()).toEqual("[10,11,20,21]");
 });
 
 test("filter", () => {
-    expect(NativeSet.of(1, 2, 3, 4).filter(e => e % 2 === 0).toString()).toEqual("[2, 4]");
+    expect(NativeSet.of(1, 2, 3, 4).filter(e => e % 2 === 0).toString()).toEqual("[2,4]");
 });
 
 test("reduceLeft", () => {
