@@ -24,8 +24,19 @@ export interface MutableList<T> extends Collection<T> {
 
 export interface MutableSet<T> extends Collection<T> {
     contains(element: T): boolean;
-    add(element: T): this;
-    addAll(elements: Iterable<T>): this;
+    forAll(op: ((element: T) => boolean)): boolean;
+    exists(op: ((element: T) => boolean)): boolean;
+    find(op: ((element: T) => boolean)): Option<T>;
+    toArray(): Array<T>;
+    toSet(): ImmutableSet<T>;
+    toList(): List<T>;
+
+    clear(): void;
+    add(element: T): void;
+    addAll(elements: Iterable<T>): void;
+    remove(element: T): void;
+    removeAll(elements: Iterable<T>): void;
+
 }
 
 export class MutableEntry<K, V> {
