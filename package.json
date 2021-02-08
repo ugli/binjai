@@ -1,6 +1,6 @@
 {
   "name": "binjai",
-  "version": "0.5.8",
+  "version": "0.5.9",
   "description": "Typescript collections and more to come..",
   "keywords": [
     "typescript",
@@ -19,7 +19,7 @@
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
-    "prebuild": "rm -f src/index.ts && barrelsby -d src -e .*\\TestSpec.ts$",
+    "generate:index": "barrelsby -d src -e .*\\TestSpec.ts$",
     "build": "tsc",
     "test": "jest --coverage"
   },
