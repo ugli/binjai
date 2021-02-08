@@ -1,6 +1,6 @@
 {
   "name": "binjai",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "Typescript collections and more to come..",
   "keywords": [
     "typescript",
@@ -16,15 +16,22 @@
   "bugs": {
     "url": "https://github.com/ugli/binjai/issues"
   },
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
-    "compile": "tsc",
+    "index-ts": "barrelsby -d dist -n index.d.ts",
+    "index-js": "create-index ./dist -r && create-index ./dist -u -r",
+    "build": "tsc",
     "test": "jest --coverage",
-    "prebuild": "rm -rf lib",
-    "build": "npm run compile && npm t",
-    "publish-lib": "npm run build && cp package.json README.md lib && cd lib && npm publish"
+    "prepare": "rm -rf dist && npm run build && npm t && npm run index-js && npm run index-ts"
   },
   "devDependencies": {
     "@types/jest": "26.0.20",
+    "barrelsby": "2.2.0",
+    "create-index": "2.6.0",
     "jest": "26.6.3",
     "ts-jest": "26.5.0",
     "typescript": "4.1.3"
