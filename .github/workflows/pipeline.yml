@@ -20,7 +20,6 @@ jobs:
           node-version: '14.x'
           registry-url: 'https://registry.npmjs.org'
       - run: npm ci
-      - run: npm run generate:index
       - run: npm run build
       - run: npm t
       - run: cp LICENSE package.json README.md dist
