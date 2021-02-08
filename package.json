@@ -1,6 +1,6 @@
 {
   "name": "binjai",
-  "version": "0.5.11",
+  "version": "0.5.12",
   "description": "Typescript collections and more to come..",
   "keywords": [
     "typescript",
@@ -16,15 +16,12 @@
   "bugs": {
     "url": "https://github.com/ugli/binjai/issues"
   },
-  "main": "index.js",
-  "types": "index.d.ts",
   "scripts": {
     "build": "tsc",
     "test": "jest --coverage"
   },
   "devDependencies": {
     "@types/jest": "26.0.20",
-    "barrelsby": "2.2.0",
     "jest": "26.6.3",
     "ts-jest": "26.5.0",
     "typescript": "4.1.3"
