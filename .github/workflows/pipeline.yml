@@ -20,7 +20,9 @@ jobs:
           node-version: '14.x'
           registry-url: 'https://registry.npmjs.org'
       - run: npm ci
-      - run: npm run before:publish
-      - run: npm publish --prefix dist
+      - run: npm run build
+      - run: npm t
+      - run: cp LICENSE package.json README.md dist
+      - run: cd dist && npm publish
         env:
             NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}

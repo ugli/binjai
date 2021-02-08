@@ -21,9 +21,7 @@
   "scripts": {
     "prebuild": "rm -f src/index.ts && barrelsby -d src -e .*\\TestSpec.ts$",
     "build": "tsc",
-    "test": "jest --coverage",
-    "dist:copy": "cp LICENSE package.json README.md dist",
-    "before:publish": "rm -rf dist && npm run build && npm t && npm run dist:copy"
+    "test": "jest --coverage"
   },
   "devDependencies": {
     "@types/jest": "26.0.20",
