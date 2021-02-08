@@ -1,6 +1,6 @@
 {
   "name": "binjai",
-  "version": "0.5.7",
+  "version": "0.5.8",
   "description": "Typescript collections and more to come..",
   "keywords": [
     "typescript",
@@ -22,16 +22,14 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "index-ts": "barrelsby -d dist -n index.d.ts -s filesystem",
-    "index-js": "create-index ./dist -r && create-index ./dist -u -r",
+    "prebuild": "rm -f src/index.ts && barrelsby -d src -e .*\\TestSpec.ts$",
     "build": "tsc",
     "test": "jest --coverage",
-    "prepare": "rm -rf dist && npm run build && npm t && npm run index-js && npm run index-ts"
+    "prepare": "rm -rf dist && npm run build && npm t"
   },
   "devDependencies": {
     "@types/jest": "26.0.20",
     "barrelsby": "2.2.0",
-    "create-index": "2.6.0",
     "jest": "26.6.3",
     "ts-jest": "26.5.0",
     "typescript": "4.1.3"
