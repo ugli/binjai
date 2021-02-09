@@ -33,6 +33,7 @@ jobs:
           git config user.email gh-actions-${GITHUB_ACTOR}@github.com
           git remote add gh-origin https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
           npm version minor -m "Version %s [build-skip]"
+          npm run prerelease
           cd dist && npm publish
           git push gh-origin HEAD:master --tags
         env:
