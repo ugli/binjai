@@ -22,6 +22,8 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm t
+      - run: git config --global user.email "fredik.kivi@ugli.se"
+      - run: git config --global user.name "frekiv"
       - run: npm version patch -m "v%s set by pipeline"
       - run: cp LICENSE package.json README.md dist
       - run: cd dist && npm publish
